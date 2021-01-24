@@ -99,3 +99,4 @@ python predict.py --model pre_googlenet --dataset SCUT --experiment_dir "run\AOI
 - dlib-models : https://github.com/davisking/dlib-models
 - Transfer Learning - Fine tune : https://hackmd.io/@lido2370/HyLTOlSn4?type=view
 - ImageFolder : https://blog.csdn.net/TH_NUM/article/details/80877435
+- pytorch-summary : https://github.com/sksq96/pytorch-summary
