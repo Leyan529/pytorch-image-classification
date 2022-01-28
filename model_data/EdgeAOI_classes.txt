@@ -1,0 +1,6 @@
+normal
+void
+horizontal defect
+vertical defect
+edge defect
+particle
