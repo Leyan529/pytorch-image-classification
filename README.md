@@ -76,18 +76,19 @@ I use the **`round of mean beauty score`** to train the classification model.
 * **dlib==19.21**
 
 ## Usage
-### 0. Prepare the dataset
+### 1. Prepare the dataset
 * **Create your own `dataset_annotation.py` then create `cls_train.txt` and `cls_test.txt` .** 
+* **Prepare pretrain download weight to `model_data` .** 
 * **For `SCUT` I prepare code to predict face in `predict.py`, which need prepare face_landmarks and dlib library to make `frontal_face_detector`, these data are put in extra**.
 * **`shape_predictor_68_face_landmarks.dat` download from [here](https://github.com/davisking/dlib-models/blob/master/shape_predictor_68_face_landmarks.dat.bz2)**.
 
-### 1. Train (Freeze backbone + UnFreeze backbone) 
+### 2. Train (Freeze backbone + UnFreeze backbone) 
 * setup your `root_path` and choose `DataType`
 ```python
 python train.py
 ```
 
-### 2. Evaluate  (eval_top1 / eval_top5) 
+### 3. Evaluate  (eval_top1 / eval_top5) 
 * setup your `root_path` and choose `DataType` in `eval_topn.py`
 * setup your `model_path` and `classes_path` in `classification.py`
 * evaluate file will load `classification.py` configuration
@@ -96,7 +97,7 @@ python eval_top1.py
 python eval_top5.py
 ```
 
-### 3. predicy  
+### 4. predicy  
 * setup your `model_path` and `classes_path` in `classification.py`
 * evaluate file will load `classification.py` configuration
 ```python
