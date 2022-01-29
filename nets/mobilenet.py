@@ -136,7 +136,7 @@ class MobileNetV2(nn.Module):
 def mobilenet_v2(pretrained=False, progress=True, num_classes=1000):
     model = MobileNetV2()
     if pretrained:
-        state_dict = load_state_dict_from_url(model_urls['mobilenet_v2'], model_dir='./model_data',
+        state_dict = load_state_dict_from_url(model_urls['mobilenet_v2'], model_dir='./model_data/weight',
                                               progress=progress)
         model.load_state_dict(state_dict)
 
