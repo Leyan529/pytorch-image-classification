@@ -51,14 +51,17 @@ I use the **`round of mean beauty score`** to train the classification model.
 ```
 
 ## Methods
-- **cnn**
-- **resnet**
-- **pre_resnet**
-- **pre_squeezenet**
-- **pre_mobilenet**
-- **pre_shufflenet**
-- **pre_googlenet**
-- **pre_inception**
+- **mobilenet**
+- **resnet50**
+- **vgg16**
+- **vit**
+- **googlenet**
+- **shufflenet**
+- **inception**
+- **squeezenet**
+- **efficientnet**
+- **densenet**
+- **alexnet**
 
 ## Prerequisites
 * **Windows 10**
@@ -74,25 +77,30 @@ I use the **`round of mean beauty score`** to train the classification model.
 
 ## Usage
 ### 0. Prepare the dataset
-* **Download custom ImageFolder dataset in the  `data_paths`.** 
-* **And create custom dataset `custom_dataset.py` in the `dataset`.**
+* **Create your own `dataset_annotation.py` then create `cls_train.txt` and `cls_test.txt` .** 
 * **For `SCUT` I prepare code to predict face in `predict.py`, which need prepare face_landmarks and dlib library to make `frontal_face_detector`, these data are put in extra**.
 * **`shape_predictor_68_face_landmarks.dat` download from [here](https://github.com/davisking/dlib-models/blob/master/shape_predictor_68_face_landmarks.dat.bz2)**.
 
-### 1. Train + Evaluate
-#### AOI (include predict Dataframe)
+### 1. Train (Freeze backbone + UnFreeze backbone) 
+* setup your `root_path` and choose `DataType`
 ```python
-python train.py --model pre_googlenet --dataset AOI --batch_size 4 --n_gpu 1
+python train.py
 ```
 
-#### SCUT
+### 2. Evaluate  (eval_top1 / eval_top5) 
+* setup your `root_path` and choose `DataType` in `eval_topn.py`
+* setup your `model_path` and `classes_path` in `classification.py`
+* evaluate file will load `classification.py` configuration
 ```python
-python train_facerank.py --model pre_googlenet --dataset SCUT --batch_size 4 --n_gpu 1
+python eval_top1.py
+python eval_top5.py
 ```
 
-### 2. Predict Face Score
+### 3. predicy  
+* setup your `model_path` and `classes_path` in `classification.py`
+* evaluate file will load `classification.py` configuration
 ```python
-python predict.py --model pre_googlenet --dataset SCUT --experiment_dir "run\AOI\pre_googlenet\experiment_2"
+python predict.py
 ```
 
 ## Reference
