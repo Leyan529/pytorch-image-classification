@@ -3,7 +3,7 @@ import numpy as np
 import torch
 from torch import nn
 
-from nets import get_model_from_name
+from nets import get_model_from_name, ModelType
 from utils.utils import (cvtColor, get_classes, letterbox_image,
                          preprocess_input)
 
@@ -33,7 +33,7 @@ class Classification(object):
         #   所用模型种类：
         #   mobilenet、resnet50、vgg16、vit
         #--------------------------------------------------------------------#
-        "backbone"      : 'mobilenet', # choose classification model
+        "backbone"      : ModelType.mobilenet, # choose classification model
         #-------------------------------#
         #   是否使用Cuda
         #   没有GPU可以设置成False

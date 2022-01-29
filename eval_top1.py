@@ -6,10 +6,10 @@ from classification import (Classification, cvtColor,
                             letterbox_image, preprocess_input)
 from utils.utils import letterbox_image
 import os
+from helps.choose_data import DataType, get_data
 
-data_dir = "D:/WorkSpace/JupyterWorkSpace/DataSet/Image-Classification/EdgeAOI/"
-# data_dir = "D:/WorkSpace/JupyterWorkSpace/DataSet/Image-Classification/HandWrite/"
-# data_dir = "D:/WorkSpace/JupyterWorkSpace/DataSet/Image-Classification/SCUT-FBP5500_v2/"
+root_path = "D:/WorkSpace/JupyterWorkSpace/DataSet/Image-Classification"
+data_dir, _ = get_data(root_path, DataType.EdgeAOI)
 
 class top1_Classification(Classification):
     def detect_image(self, image):        

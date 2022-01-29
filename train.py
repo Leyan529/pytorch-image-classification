@@ -4,16 +4,15 @@ import torch
 import torch.backends.cudnn as cudnn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from nets import get_model_from_name
+from nets import get_model_from_name, ModelType
 
 from utils.callbacks import LossHistory
 from utils.dataloader import DataGenerator, detection_collate
 from utils.utils import get_classes, weights_init
 from utils.utils_fit import fit_one_epoch
+from helps.choose_data import DataType, get_data
 
 if __name__ == "__main__":
-    # 
-    
     #----------------------------------------------------#
     #   是否使用Cuda
     #   没有GPU可以设置成False
@@ -23,14 +22,8 @@ if __name__ == "__main__":
     #   训练自己的数据集的时候一定要注意修改classes_path
     #   修改成自己对应的种类的txt
     #----------------------------------------------------#
-    # data_dir = "D:/WorkSpace/JupyterWorkSpace/DataSet/Image-Classification/EdgeAOI/"
-    # classes_path    = 'model_data/EdgeAOI_classes.txt' 
-
-    # data_dir = "D:/WorkSpace/JupyterWorkSpace/DataSet/Image-Classification/HandWrite/"
-    # classes_path    = 'model_data/HandWrite_classes.txt' 
-
-    data_dir = "D:/WorkSpace/JupyterWorkSpace/DataSet/Image-Classification/SCUT-FBP5500_v2/"
-    classes_path    = 'model_data/SCUT_classes.txt' 
+    root_path = "D:/WorkSpace/JupyterWorkSpace/DataSet/Image-Classification"
+    data_dir, classes_path = get_data(root_path, DataType.SCUT)
     #----------------------------------------------------#
     #   输入的图片大小
     #----------------------------------------------------#
@@ -51,10 +44,10 @@ if __name__ == "__main__":
     # backbone        = "inception"
     # backbone        = "squeezenet"
     # backbone        = "efficientnet"
-    backbone        = "densenet"
+    # backbone        = "densenet"
     # backbone        = "alexnet"
-    
-    
+
+    backbone = ModelType.densenet       
     #----------------------------------------------------------------------------------------------------------------------------#
     #   是否使用主干网络的预训练权重，此处使用的是主干的权重，因此是在模型构建的时候进行加载的。
     #   如果设置了model_path，则主干的权值无需加载，pretrained的值无意义。

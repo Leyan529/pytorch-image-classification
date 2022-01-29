@@ -10,6 +10,20 @@ from .efficientnet import efficientnet
 from .densenet   import densenet
 from .alexnet    import alexnet
 
+class ModelType:
+    mobilenet   = "mobilenet"
+    resnet50    = "resnet50" 
+    vgg16       = "vgg16"
+    vit         = "vit" 
+    googlenet   = "googlenet" 
+    shufflenet  = "shufflenet"
+    inception   = "inception"
+    squeezenet  = "squeezenet"
+    efficientnet = "efficientnet"
+    densenet     = "densenet"
+    alexnet      = "alexnet"
+
+
 get_model_from_name = {
     "mobilenet"     : mobilenet_v2,
     "resnet50"      : resnet50,
