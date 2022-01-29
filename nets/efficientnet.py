@@ -3,18 +3,10 @@ import math
 from functools import partial
 from typing import Any, Callable, Optional, List, Sequence
 
-import torch
 import torch.fx
 from torch import nn, Tensor
-# from torchvision.ops import StochasticDepth
-
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from torch import Tensor
-
 from torchvision.models.utils import load_state_dict_from_url
-import torch.nn.init as init
 
 from .ops.misc import ConvNormActivation, SqueezeExcitation, StochasticDepth, _make_divisible
 

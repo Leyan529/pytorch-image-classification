@@ -4,10 +4,14 @@ import scipy.signal
 import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
-
+from torchsummary import summary
+from tensorboardX import SummaryWriter
+import torch
+import io
+from contextlib import redirect_stdout
 
 class LossHistory():
-    def __init__(self, log_dir):
+    def __init__(self, log_dir, model, input_shape):
         import datetime
         curr_time = datetime.datetime.now()
         time_str = datetime.datetime.strftime(curr_time,'%Y_%m_%d_%H_%M_%S')
@@ -16,10 +20,37 @@ class LossHistory():
         self.save_path  = os.path.join(self.log_dir, "loss_" + str(self.time_str))
         self.losses     = []
         self.val_loss   = []
+        self.writer = SummaryWriter(log_dir=os.path.join(self.log_dir, "run_" + str(self.time_str)))
+        self.freeze = False
+
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        rndm_input = torch.autograd.Variable(torch.rand(1, 3, input_shape[0], input_shape[1]), requires_grad = False).to(device)
+        self.writer.add_graph(model, rndm_input)
+
+        f = io.StringIO()
+        with redirect_stdout(f):
+            summary(model, (3, input_shape[0], input_shape[1]))
+        lines = f.getvalue()
+        with open(os.path.join(self.log_dir, "summary.txt") ,"w") as f:
+            [f.write(line) for line in lines]
         
         os.makedirs(self.save_path)
 
-    def append_loss(self, loss, val_loss):
+    # def append_loss(self, loss, val_loss):
+    #     self.losses.append(loss)
+    #     self.val_loss.append(val_loss)
+    #     with open(os.path.join(self.save_path, "epoch_loss_" + str(self.time_str) + ".txt"), 'a') as f:
+    #         f.write(str(loss))
+    #         f.write("\n")
+    #     with open(os.path.join(self.save_path, "epoch_val_loss_" + str(self.time_str) + ".txt"), 'a') as f:
+    #         f.write(str(val_loss))
+    #         f.write("\n")
+    #     self.loss_plot()
+
+    def set_status(self, freeze):
+        self.freeze = freeze
+
+    def append_loss(self, loss, val_loss, epoch):
         self.losses.append(loss)
         self.val_loss.append(val_loss)
         with open(os.path.join(self.save_path, "epoch_loss_" + str(self.time_str) + ".txt"), 'a') as f:
@@ -28,7 +59,20 @@ class LossHistory():
         with open(os.path.join(self.save_path, "epoch_val_loss_" + str(self.time_str) + ".txt"), 'a') as f:
             f.write(str(val_loss))
             f.write("\n")
+        
         self.loss_plot()
+
+        prefix = "Freeze_epoch/" if self.freeze else "UnFreeze_epoch/"     
+        self.writer.add_scalar(prefix+'Loss/Train', loss, epoch)
+        self.writer.add_scalar(prefix+'Loss/Val', val_loss, epoch)
+
+    def step(self, steploss, iteration):        
+        prefix = "Freeze_step/" if self.freeze else "UnFreeze_step/"
+        self.writer.add_scalar(prefix + 'Train/Loss', steploss, iteration)
+
+    def step_acc(self, step_acc, iteration):        
+        prefix = "Freeze_step/" if self.freeze else "UnFreeze_step/"
+        self.writer.add_scalar(prefix + 'Train/Acc', step_acc, iteration)
 
     def loss_plot(self):
         iters = range(len(self.losses))

@@ -42,7 +42,7 @@ if __name__ == "__main__":
     #   在使用vit时学习率需要设置的小一些，否则不收敛
     #   可以将最下方的两个lr分别设置成1e-4、1e-5
     #----------------------------------------------------#
-    # backbone        = "resnet50"
+    backbone        = "resnet50"
     # backbone        = "vgg16"
     # backbone        = "mobilenet"
     # backbone        = "googlenet"
@@ -52,7 +52,9 @@ if __name__ == "__main__":
     # input_shape     = [299, 299]
 
     # backbone        = "squeezenet"
-    backbone        = "efficientnet"
+    # backbone        = "efficientnet"
+    # backbone        = "densenet"
+    # backbone        = "alexnet"
     
     
     #----------------------------------------------------------------------------------------------------------------------------#
@@ -126,7 +128,7 @@ if __name__ == "__main__":
         cudnn.benchmark = True
         model_train = model_train.cuda()
         
-    loss_history = LossHistory(os.path.join("logs", backbone))
+    loss_history = LossHistory(os.path.join("logs", backbone), model_train, input_shape)
     #----------------------------------------------------#
     #   验证集的划分在train.py代码里面进行
     #----------------------------------------------------#

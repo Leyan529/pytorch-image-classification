@@ -41,6 +41,8 @@ def fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step
                                 'accuracy'  : total_accuracy / (iteration + 1), 
                                 'lr'        : get_lr(optimizer)})
             pbar.update(1)
+            loss_history.step(total_loss / (iteration + 1), (epoch_step * epoch + iteration + 1))
+            loss_history.step_acc(total_accuracy / (iteration + 1), (epoch_step * epoch + iteration + 1))
 
     print('Finish Train')
 
@@ -69,7 +71,7 @@ def fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step
                                 'lr'        : get_lr(optimizer)})
             pbar.update(1)
                 
-    loss_history.append_loss(total_loss / epoch_step, val_loss / epoch_step_val)
+    loss_history.append_loss(total_loss / epoch_step, val_loss / epoch_step_val, epoch+1)
     print('Finish Validation')
     print('Epoch:' + str(epoch + 1) + '/' + str(Epoch))
     print('Total Loss: %.3f || Val Loss: %.3f ' % (total_loss / epoch_step, val_loss / epoch_step_val))
