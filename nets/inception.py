@@ -7,22 +7,10 @@ from torch import Tensor
 
 from torchvision.models.utils import load_state_dict_from_url
 
-
-__all__ = ["Inception3", "inception_v3", "InceptionOutputs", "_InceptionOutputs"]
-
-
 model_urls = {
     # Inception v3 ported from TensorFlow
     "inception_v3_google": "https://download.pytorch.org/models/inception_v3_google-0cc3c7bd.pth",
 }
-
-# InceptionOutputs = namedtuple("InceptionOutputs", ["logits", "aux_logits"])
-# InceptionOutputs.__annotations__ = {"logits": Tensor, "aux_logits"}
-
-# # Script annotations failed with _GoogleNetOutputs = namedtuple ...
-# # _InceptionOutputs set here for backwards compat
-# _InceptionOutputs = InceptionOutputs
-
 
 class Inception3(nn.Module):
     def __init__(
@@ -35,16 +23,9 @@ class Inception3(nn.Module):
         dropout: float = 0.5,
     ):
         super().__init__()
-        # # _log_api_usage_once(self)
-        # if inception_blocks is None:
+
         inception_blocks = [BasicConv2d, InceptionA, InceptionB, InceptionC, InceptionD, InceptionE, InceptionAux]
         if init_weights is None:
-            # warnings.warn(
-            #     "The default weight initialization of inception_v3 will be changed in future releases of "
-            #     "torchvision. If you wish to keep the old behavior (which leads to long initialization times"
-            #     " due to scipy/scipy#11299), please set init_weights=True.",
-            #     FutureWarning,
-            # )
             init_weights = True
         assert len(inception_blocks) == 7
         conv_block = inception_blocks[0]
@@ -431,25 +412,11 @@ def inception_v3(pretrained = False, progress = True, num_classes=1000):
             was trained on ImageNet. Default: True if ``pretrained=True``, else False.
     """
     if pretrained:
-        # if "transform_input" not in kwargs:
-        #     kwargs["transform_input"] = True
-        # if "aux_logits" in kwargs:
-        #     original_aux_logits = kwargs["aux_logits"]
-        #     kwargs["aux_logits"] = True
-        # else:
-        #     original_aux_logits = True
-        # kwargs["init_weights"] = False  # we are loading weights from a pretrained model
-        # model = Inception3(**kwargs)
         model = Inception3()
         state_dict = load_state_dict_from_url(model_urls["inception_v3_google"], progress=progress, model_dir='./model_data/weight')
         model.load_state_dict(state_dict)
 
-        if num_classes!=1000:
-            model.fc = nn.Linear(2048, num_classes)
+    if num_classes!=1000:
+        model.fc = nn.Linear(2048, num_classes)
 
-        # if not original_aux_logits:
-        #     model.aux_logits = False
-        #     model.AuxLogits = None
-        return model
-
-    # return Inception3(**kwargs)
+    return model

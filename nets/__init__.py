@@ -5,6 +5,7 @@ from .vit import vit
 from .googlenet import googlenet
 from .shufflenet import shufflenetv2
 from .inception import inception_v3
+from .squeezenet import squeezenet
 
 get_model_from_name = {
     "mobilenet"     : mobilenet_v2,
@@ -14,4 +15,5 @@ get_model_from_name = {
     "googlenet"     : googlenet,
     "shufflenet"    : shufflenetv2,
     "inception"     : inception_v3,
+    "squeezenet"     : squeezenet,
 }

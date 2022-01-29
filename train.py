@@ -48,8 +48,10 @@ if __name__ == "__main__":
     # backbone        = "googlenet"
     # backbone        = "shufflenet"
 
-    backbone        = "inception"
-    input_shape     = [299, 299]
+    # backbone        = "inception"
+    # input_shape     = [299, 299]
+
+    backbone        = "squeezenet"
     
     #----------------------------------------------------------------------------------------------------------------------------#
     #   是否使用主干网络的预训练权重，此处使用的是主干的权重，因此是在模型构建的时候进行加载的。

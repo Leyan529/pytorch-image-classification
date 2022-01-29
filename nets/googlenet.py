@@ -3,8 +3,6 @@ import torch.nn.functional as F
 
 from torch import nn
 from torchvision.models.utils import load_state_dict_from_url
-from collections import namedtuple
-__all__ = ["GoogLeNet", "googlenet", "GoogLeNetOutputs", "_GoogLeNetOutputs"]
 
 model_urls = {
     # GoogLeNet ported from TensorFlow
@@ -12,7 +10,6 @@ model_urls = {
 }
 
 class GoogLeNet(nn.Module):
-    __constants__ = ["aux_logits", "transform_input"]
 
     def __init__(
         self,

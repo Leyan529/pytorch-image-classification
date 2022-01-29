@@ -7,8 +7,6 @@ from torch import Tensor
 from torchvision.models.utils import load_state_dict_from_url
 
 
-__all__ = ["ShuffleNetV2", "shufflenet_v2_x0_5", "shufflenet_v2_x1_0", "shufflenet_v2_x1_5", "shufflenet_v2_x2_0"]
-
 model_urls = {
     "shufflenetv2_x0.5": "https://download.pytorch.org/models/shufflenetv2_x0.5-f707e7126e.pth",
     "shufflenetv2_x1.0": "https://download.pytorch.org/models/shufflenetv2_x1-5666bf0f80.pth",
@@ -75,7 +73,7 @@ class InvertedResidual(nn.Module):
     @staticmethod
     def depthwise_conv(
         i, o, kernel_size, stride = 1, padding = 0, bias: bool = False
-    ) -> nn.Conv2d:
+    ):
         return nn.Conv2d(i, o, kernel_size, stride, padding, bias=bias, groups=i)
 
     def forward(self, x: Tensor):
@@ -96,7 +94,7 @@ class ShuffleNetV2(nn.Module):
         stages_repeats: List[int],
         stages_out_channels: List[int],
         num_classes = 1000,
-        inverted_residual: Callable[..., nn.Module] = InvertedResidual,
+        inverted_residual = InvertedResidual,
     ):
         super().__init__()
         # _log_api_usage_once(self)
@@ -172,8 +170,6 @@ class ShuffleNetV2(nn.Module):
 def shufflenetv2(pretrained = False, progress = True, num_classes=1000):
     model = ShuffleNetV2(stages_repeats =[4, 8, 4],
                         stages_out_channels = [24, 116, 232, 464, 1024])
-    # model = ShuffleNetV2(*args, **kwargs)
-    # model = ShuffleNetV2(*args, [4, 8, 4], [24, 116, 232, 464, 1024], **kwargs)
 
     if pretrained:
         arch = "shufflenetv2_x1.0"
