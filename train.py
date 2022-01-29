@@ -34,7 +34,8 @@ if __name__ == "__main__":
     #----------------------------------------------------#
     #   输入的图片大小
     #----------------------------------------------------#
-    input_shape     = [224, 224]
+    # input_shape     = [224, 224]
+    input_shape     = [299, 299]
     #----------------------------------------------------#
     #   所用模型种类：
     #   mobilenet、resnet50、vgg16、vit
@@ -42,18 +43,15 @@ if __name__ == "__main__":
     #   在使用vit时学习率需要设置的小一些，否则不收敛
     #   可以将最下方的两个lr分别设置成1e-4、1e-5
     #----------------------------------------------------#
-    backbone        = "resnet50"
+    # backbone        = "resnet50"
     # backbone        = "vgg16"
     # backbone        = "mobilenet"
     # backbone        = "googlenet"
     # backbone        = "shufflenet"
-
     # backbone        = "inception"
-    # input_shape     = [299, 299]
-
     # backbone        = "squeezenet"
     # backbone        = "efficientnet"
-    # backbone        = "densenet"
+    backbone        = "densenet"
     # backbone        = "alexnet"
     
     

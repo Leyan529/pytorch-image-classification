@@ -32,20 +32,9 @@ class LossHistory():
             summary(model, (3, input_shape[0], input_shape[1]))
         lines = f.getvalue()
         with open(os.path.join(self.log_dir, "summary.txt") ,"w") as f:
-            [f.write(line) for line in lines]
+            [f.write(line) for line in lines]    
         
         os.makedirs(self.save_path)
-
-    # def append_loss(self, loss, val_loss):
-    #     self.losses.append(loss)
-    #     self.val_loss.append(val_loss)
-    #     with open(os.path.join(self.save_path, "epoch_loss_" + str(self.time_str) + ".txt"), 'a') as f:
-    #         f.write(str(loss))
-    #         f.write("\n")
-    #     with open(os.path.join(self.save_path, "epoch_val_loss_" + str(self.time_str) + ".txt"), 'a') as f:
-    #         f.write(str(val_loss))
-    #         f.write("\n")
-    #     self.loss_plot()
 
     def set_status(self, freeze):
         self.freeze = freeze
