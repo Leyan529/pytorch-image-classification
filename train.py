@@ -42,8 +42,15 @@ if __name__ == "__main__":
     #   在使用vit时学习率需要设置的小一些，否则不收敛
     #   可以将最下方的两个lr分别设置成1e-4、1e-5
     #----------------------------------------------------#
+    # backbone        = "resnet50"
+    # backbone        = "vgg16"
     # backbone        = "mobilenet"
-    backbone        = "googlenet"
+    # backbone        = "googlenet"
+    # backbone        = "shufflenet"
+
+    backbone        = "inception"
+    input_shape     = [299, 299]
+    
     #----------------------------------------------------------------------------------------------------------------------------#
     #   是否使用主干网络的预训练权重，此处使用的是主干的权重，因此是在模型构建的时候进行加载的。
     #   如果设置了model_path，则主干的权值无需加载，pretrained的值无意义。
@@ -146,7 +153,8 @@ if __name__ == "__main__":
         #   占用的显存较小，仅对网络进行微调
         #----------------------------------------------------#
         lr              = 1e-3
-        Batch_size      = 32
+        # Batch_size      = 32
+        Batch_size      = 2
         Init_Epoch      = 0
         Freeze_Epoch    = 50
 
