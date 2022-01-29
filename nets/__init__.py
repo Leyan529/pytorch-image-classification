@@ -6,6 +6,7 @@ from .googlenet import googlenet
 from .shufflenet import shufflenetv2
 from .inception import inception_v3
 from .squeezenet import squeezenet
+from .efficientnet import efficientnet
 
 get_model_from_name = {
     "mobilenet"     : mobilenet_v2,
@@ -15,5 +16,6 @@ get_model_from_name = {
     "googlenet"     : googlenet,
     "shufflenet"    : shufflenetv2,
     "inception"     : inception_v3,
-    "squeezenet"     : squeezenet,
+    "squeezenet"    : squeezenet,
+    "efficientnet"  : efficientnet
 }

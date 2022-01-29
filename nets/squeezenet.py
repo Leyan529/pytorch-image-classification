@@ -117,37 +117,5 @@ def squeezenet(pretrained = False, progress = True, num_classes=1000):
         final_conv = nn.Conv2d(512, num_classes, kernel_size=1)
         model.classifier = nn.Sequential(
             nn.Dropout(p=0.5), final_conv, nn.ReLU(inplace=True), nn.AdaptiveAvgPool2d((1, 1))
-        )
-
-    # self.classifier = nn.Sequential(
-    #         nn.Dropout(p=dropout), final_conv, nn.ReLU(inplace=True), nn.AdaptiveAvgPool2d((1, 1))
-    #     )
-
+        )  
     return model
-
-
-# def squeezenet1_0(pretrained: bool = False, progress: bool = True, **kwargs: Any) -> SqueezeNet:
-#     r"""SqueezeNet model architecture from the `"SqueezeNet: AlexNet-level
-#     accuracy with 50x fewer parameters and <0.5MB model size"
-#     <https://arxiv.org/abs/1602.07360>`_ paper.
-#     The required minimum input size of the model is 21x21.
-
-#     Args:
-#         pretrained (bool): If True, returns a model pre-trained on ImageNet
-#         progress (bool): If True, displays a progress bar of the download to stderr
-#     """
-#     return _squeezenet("1_0", pretrained, progress, **kwargs)
-
-
-# def squeezenet1_1(pretrained: bool = False, progress: bool = True, **kwargs: Any) -> SqueezeNet:
-#     r"""SqueezeNet 1.1 model from the `official SqueezeNet repo
-#     <https://github.com/DeepScale/SqueezeNet/tree/master/SqueezeNet_v1.1>`_.
-#     SqueezeNet 1.1 has 2.4x less computation and slightly fewer parameters
-#     than SqueezeNet 1.0, without sacrificing accuracy.
-#     The required minimum input size of the model is 17x17.
-
-#     Args:
-#         pretrained (bool): If True, returns a model pre-trained on ImageNet
-#         progress (bool): If True, displays a progress bar of the download to stderr
-#     """
-#     return _squeezenet("1_1", pretrained, progress, **kwargs)
