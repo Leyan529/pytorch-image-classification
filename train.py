@@ -138,11 +138,11 @@ if __name__ == "__main__":
         #   此时模型的主干被冻结了，特征提取网络不发生改变
         #   占用的显存较小，仅对网络进行微调
         #----------------------------------------------------#
-        lr              = 1e-3
-        # Batch_size      = 32
-        Batch_size      = 2
-        Init_Epoch      = 0
-        Freeze_Epoch    = 50
+        lr               = 1e-3
+        # Batch_size     = 32
+        Batch_size       = 2
+        Init_Epoch       = 0
+        max_Freeze_Epoch = 50
 
         epoch_step      = num_train // Batch_size
         epoch_step_val  = num_val // Batch_size
@@ -165,10 +165,10 @@ if __name__ == "__main__":
         if Freeze_Train:
             model.freeze_backbone()
 
-        for epoch in range(Init_Epoch,Freeze_Epoch):
-            Start_UnFreeze_Epoch = epoch + 1
+        for epoch in range(Init_Epoch, max_Freeze_Epoch):
+            next_UnFreeze_Epoch = epoch + 1
             if loss_history.earlyStop(): break
-            fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, Freeze_Epoch, Cuda)
+            fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, max_Freeze_Epoch, Cuda)
             lr_scheduler.step()
             
             
@@ -181,8 +181,7 @@ if __name__ == "__main__":
         #----------------------------------------------------#
         lr              = 1e-4
         Batch_size      = 16
-        # Start_UnFreeze_Epoch    = 50
-        End_UnFreeze_Epoch  = 100
+        max_UnFreeze_Epoch  = 100
 
         epoch_step      = num_train // Batch_size
         epoch_step_val  = num_val // Batch_size
@@ -205,7 +204,7 @@ if __name__ == "__main__":
         if Freeze_Train:
             model.Unfreeze_backbone()
 
-        for epoch in range(Start_UnFreeze_Epoch, End_UnFreeze_Epoch):
+        for epoch in range(next_UnFreeze_Epoch, max_UnFreeze_Epoch):
             if loss_history.earlyStop(): break
-            fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, End_UnFreeze_Epoch, Cuda)
+            fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, max_UnFreeze_Epoch, Cuda)
             lr_scheduler.step()
