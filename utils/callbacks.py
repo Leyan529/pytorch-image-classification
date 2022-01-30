@@ -9,9 +9,18 @@ from tensorboardX import SummaryWriter
 import torch
 import io
 from contextlib import redirect_stdout
+import threading
+import webbrowser
+import numpy as np
+
+def launchTensorBoard(tensorBoardPath, port = 8888):
+    os.system('tensorboard --logdir=%s --port=%s'%(tensorBoardPath, port))
+    url = "http://localhost:%s/"%(port)
+    webbrowser.open_new(url)
+    return
 
 class LossHistory():
-    def __init__(self, log_dir, model, input_shape):
+    def __init__(self, log_dir, model, input_shape, patience = 3):
         import datetime
         curr_time = datetime.datetime.now()
         time_str = datetime.datetime.strftime(curr_time,'%Y_%m_%d_%H_%M_%S')
@@ -23,16 +32,28 @@ class LossHistory():
         self.writer = SummaryWriter(log_dir=os.path.join(self.log_dir, "run_" + str(self.time_str)))
         self.freeze = False
 
+        # tensorboard graph
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         rndm_input = torch.autograd.Variable(torch.rand(1, 3, input_shape[0], input_shape[1]), requires_grad = False).to(device)
         self.writer.add_graph(model, rndm_input)
 
+        # export torch summary
         f = io.StringIO()
         with redirect_stdout(f):
             summary(model, (3, input_shape[0], input_shape[1]))
         lines = f.getvalue()
         with open(os.path.join(self.log_dir, "summary.txt") ,"w") as f:
             [f.write(line) for line in lines]    
+
+        # launch tensorboard
+        t = threading.Thread(target=launchTensorBoard, args=([self.log_dir]))
+        t.start()     
+
+        # initial EarlyStopping
+        self.best_lower_loss = np.Inf 
+        self.early_stop = False
+        self.counter  = 0
+        self.patience = patience
         
         os.makedirs(self.save_path)
 
@@ -54,6 +75,7 @@ class LossHistory():
         prefix = "Freeze_epoch/" if self.freeze else "UnFreeze_epoch/"     
         self.writer.add_scalar(prefix+'Loss/Train', loss, epoch)
         self.writer.add_scalar(prefix+'Loss/Val', val_loss, epoch)
+        self.decide(val_loss)        
 
     def step(self, steploss, iteration):        
         prefix = "Freeze_step/" if self.freeze else "UnFreeze_step/"
@@ -62,6 +84,17 @@ class LossHistory():
     def step_acc(self, step_acc, iteration):        
         prefix = "Freeze_step/" if self.freeze else "UnFreeze_step/"
         self.writer.add_scalar(prefix + 'Train/Acc', step_acc, iteration)
+
+    def decide(self, val_epoch_loss):
+        if self.best_lower_loss >= val_epoch_loss:
+            self.best_lower_loss = val_epoch_loss
+            self.counter = 0
+        else:
+            self.counter += 1
+            print(f'EarlyStopping counter: {self.counter} out of {self.patience}\n')
+    
+    def earlyStop(self):
+        return self.counter > self.patience
 
     def loss_plot(self):
         iters = range(len(self.losses))

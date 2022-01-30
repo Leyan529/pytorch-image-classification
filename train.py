@@ -35,18 +35,7 @@ if __name__ == "__main__":
     #
     #   在使用vit时学习率需要设置的小一些，否则不收敛
     #   可以将最下方的两个lr分别设置成1e-4、1e-5
-    #----------------------------------------------------#
-    # backbone        = "resnet50"
-    # backbone        = "vgg16"
-    # backbone        = "mobilenet"
-    # backbone        = "googlenet"
-    # backbone        = "shufflenet"
-    # backbone        = "inception"
-    # backbone        = "squeezenet"
-    # backbone        = "efficientnet"
-    # backbone        = "densenet"
-    # backbone        = "alexnet"
-
+    #----------------------------------------------------#  
     backbone = ModelType.densenet       
     #----------------------------------------------------------------------------------------------------------------------------#
     #   是否使用主干网络的预训练权重，此处使用的是主干的权重，因此是在模型构建的时候进行加载的。
@@ -177,8 +166,12 @@ if __name__ == "__main__":
             model.freeze_backbone()
 
         for epoch in range(Init_Epoch,Freeze_Epoch):
+            UnFreeze_Epoch = epoch + 1
+            if loss_history.earlyStop(): break
             fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, Freeze_Epoch, Cuda)
             lr_scheduler.step()
+            
+            
 
     if True:
         #----------------------------------------------------#
@@ -188,7 +181,7 @@ if __name__ == "__main__":
         #----------------------------------------------------#
         lr              = 1e-4
         Batch_size      = 16
-        Freeze_Epoch    = 50
+        # UnFreeze_Epoch    = 50
         Epoch           = 100
 
         epoch_step      = num_train // Batch_size
@@ -212,6 +205,7 @@ if __name__ == "__main__":
         if Freeze_Train:
             model.Unfreeze_backbone()
 
-        for epoch in range(Freeze_Epoch,Epoch):
+        for epoch in range(UnFreeze_Epoch,Epoch):
+            if loss_history.earlyStop(): break
             fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, Epoch, Cuda)
             lr_scheduler.step()
