@@ -166,7 +166,7 @@ if __name__ == "__main__":
             model.freeze_backbone()
 
         for epoch in range(Init_Epoch,Freeze_Epoch):
-            UnFreeze_Epoch = epoch + 1
+            Start_UnFreeze_Epoch = epoch + 1
             if loss_history.earlyStop(): break
             fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, Freeze_Epoch, Cuda)
             lr_scheduler.step()
@@ -181,8 +181,8 @@ if __name__ == "__main__":
         #----------------------------------------------------#
         lr              = 1e-4
         Batch_size      = 16
-        # UnFreeze_Epoch    = 50
-        Epoch           = 100
+        # Start_UnFreeze_Epoch    = 50
+        End_UnFreeze_Epoch  = 100
 
         epoch_step      = num_train // Batch_size
         epoch_step_val  = num_val // Batch_size
@@ -205,7 +205,7 @@ if __name__ == "__main__":
         if Freeze_Train:
             model.Unfreeze_backbone()
 
-        for epoch in range(UnFreeze_Epoch,Epoch):
+        for epoch in range(Start_UnFreeze_Epoch, End_UnFreeze_Epoch):
             if loss_history.earlyStop(): break
-            fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, Epoch, Cuda)
+            fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, End_UnFreeze_Epoch, Cuda)
             lr_scheduler.step()
