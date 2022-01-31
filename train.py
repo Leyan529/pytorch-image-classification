@@ -15,71 +15,71 @@ from helps.choose_data import DataType, get_data
 if __name__ == "__main__":
     #----------------------------------------------------#
     #   是否使用Cuda
-    #   没有GPU可以设置成False
+    #   沒有GPU可以設置成False
     #----------------------------------------------------#
     Cuda            = True
     #----------------------------------------------------#
-    #   训练自己的数据集的时候一定要注意修改classes_path
-    #   修改成自己对应的种类的txt
+    #   訓練自己的數據集的時候一定要注意修改classes_path
+    #   修改成自己對應的種類的txt
     #----------------------------------------------------#
     root_path = "D:/WorkSpace/JupyterWorkSpace/DataSet/Image-Classification"
     data_dir, classes_path = get_data(root_path, DataType.SCUT)
     #----------------------------------------------------#
-    #   输入的图片大小
+    #   輸入的圖片大小
     #----------------------------------------------------#
     # input_shape     = [224, 224]
     input_shape     = [299, 299]
     #----------------------------------------------------#
-    #   所用模型种类：
+    #   所用模型種類：
     #   mobilenet、resnet50、vgg16、vit
     #
-    #   在使用vit时学习率需要设置的小一些，否则不收敛
-    #   可以将最下方的两个lr分别设置成1e-4、1e-5
+    #   在使用vit時學習率需要設置的小一些，否則不收斂
+    #   可以將最下方的兩個lr分別設置成1e-4、1e-5
     #----------------------------------------------------#  
     backbone = ModelType.densenet       
     #----------------------------------------------------------------------------------------------------------------------------#
-    #   是否使用主干网络的预训练权重，此处使用的是主干的权重，因此是在模型构建的时候进行加载的。
-    #   如果设置了model_path，则主干的权值无需加载，pretrained的值无意义。
-    #   如果不设置model_path，pretrained = True，此时仅加载主干开始训练。
-    #   如果不设置model_path，pretrained = False，Freeze_Train = Fasle，此时从0开始训练，且没有冻结主干的过程。
+    #   是否使用主幹網絡的預訓練權重，此處使用的是主幹的權重，因此是在模型構建的時候進行加載的。
+    #   如果設置了model_path，則主幹的權值無需加載，pretrained的值無意義。
+    #   如果不設置model_path，pretrained = True，此時僅加載主幹開始訓練。
+    #   如果不設置model_path，pretrained = False，Freeze_Train = Fasle，此時從0開始訓練，且沒有凍結主幹的過程。
     #----------------------------------------------------------------------------------------------------------------------------#
     pretrained      = True
     #----------------------------------------------------------------------------------------------------------------------------#
-    #   权值文件的下载请看README，可以通过网盘下载。模型的 预训练权重 对不同数据集是通用的，因为特征是通用的。
-    #   模型的 预训练权重 比较重要的部分是 主干特征提取网络的权值部分，用于进行特征提取。
-    #   预训练权重对于99%的情况都必须要用，不用的话主干部分的权值太过随机，特征提取效果不明显，网络训练的结果也不会好
+    #   權值文件的下載請看README，可以通過網盤下載。模型的 預訓練權重 對不同數據集是通用的，因為特征是通用的。
+    #   模型的 預訓練權重 比較重要的部分是 主幹特征提取網絡的權值部分，用於進行特征提取。
+    #   預訓練權重對於99%的情況都必須要用，不用的話主幹部分的權值太過隨機，特征提取效果不明顯，網絡訓練的結果也不會好
     #
-    #   如果训练过程中存在中断训练的操作，可以将model_path设置成logs文件夹下的权值文件，将已经训练了一部分的权值再次载入。
-    #   同时修改下方的 冻结阶段 或者 解冻阶段 的参数，来保证模型epoch的连续性。
+    #   如果訓練過程中存在中斷訓練的操作，可以將model_path設置成logs文件夾下的權值文件，將已經訓練了一部分的權值再次載入。
+    #   同時修改下方的 凍結階段 或者 解凍階段 的參數，來保證模型epoch的連續性。
     #   
-    #   当model_path = ''的时候不加载整个模型的权值。
+    #   當model_path = ''的時候不加載整個模型的權值。
     #
-    #   此处使用的是整个模型的权重，因此是在train.py进行加载的，pretrain不影响此处的权值加载。
-    #   如果想要让模型从主干的预训练权值开始训练，则设置model_path = ''，pretrain = True，此时仅加载主干。
-    #   如果想要让模型从0开始训练，则设置model_path = ''，pretrain = Fasle，此时从0开始训练。
+    #   此處使用的是整個模型的權重，因此是在train.py進行加載的，pretrain不影響此處的權值加載。
+    #   如果想要讓模型從主幹的預訓練權值開始訓練，則設置model_path = ''，pretrain = True，此時僅加載主幹。
+    #   如果想要讓模型從0開始訓練，則設置model_path = ''，pretrain = Fasle，此時從0開始訓練。
     #----------------------------------------------------------------------------------------------------------------------------#
     model_path      = ""
     #------------------------------------------------------#
-    #   是否进行冻结训练，默认先冻结主干训练后解冻训练。
+    #   是否進行凍結訓練，默認先凍結主幹訓練後解凍訓練。
     #------------------------------------------------------#
     Freeze_Train    = True
     #------------------------------------------------------#
-    #   获得图片路径和标签
+    #   獲得圖片路徑和標簽
     #------------------------------------------------------#    
     annotation_path = os.path.join(data_dir, "Classification/cls_train.txt")
     #------------------------------------------------------#
-    #   进行训练集和验证集的划分，默认使用10%的数据用于验证
+    #   進行訓練集和驗證集的劃分，默認使用10%的數據用於驗證
     #------------------------------------------------------#
     val_split       = 0.1
     #------------------------------------------------------#
-    #   用于设置是否使用多线程读取数据，0代表关闭多线程
-    #   开启后会加快数据读取速度，但是会占用更多内存
-    #   在IO为瓶颈的时候再开启多线程，即GPU运算速度远大于读取图片的速度。
+    #   用於設置是否使用多線程讀取數據，0代表關閉多線程
+    #   開啟後會加快數據讀取速度，但是會占用更多內存
+    #   在IO為瓶頸的時候再開啟多線程，即GPU運算速度遠大於讀取圖片的速度。
     #------------------------------------------------------#
     num_workers     = 1
 
     #------------------------------------------------------#
-    #   获取classes
+    #   獲取classes
     #------------------------------------------------------#
     class_names, num_classes = get_classes(classes_path)
 
@@ -92,7 +92,7 @@ if __name__ == "__main__":
         weights_init(model)
     if model_path != "":
         #------------------------------------------------------#
-        #   载入预训练权重
+        #   載入預訓練權重
         #------------------------------------------------------#
         print('Loading weights into state dict...')
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -110,7 +110,7 @@ if __name__ == "__main__":
         
     loss_history = LossHistory(os.path.join("logs", backbone), model_train, input_shape)
     #----------------------------------------------------#
-    #   验证集的划分在train.py代码里面进行
+    #   驗證集的劃分在train.py代碼里面進行
     #----------------------------------------------------#
     with open(annotation_path, "r") as f:
         lines = f.readlines()
@@ -121,22 +121,22 @@ if __name__ == "__main__":
     num_train   = len(lines) - num_val
 
     #------------------------------------------------------#
-    #   训练分为两个阶段，分别是冻结阶段和解冻阶段。
-    #   显存不足与数据集大小无关，提示显存不足请调小batch_size。
-    #   受到BatchNorm层影响，batch_size最小为1。
+    #   訓練分為兩個階段，分別是凍結階段和解凍階段。
+    #   顯存不足與數據集大小無關，提示顯存不足請調小batch_size。
+    #   受到BatchNorm層影響，batch_size最小為1。
     #   
-    #   主干特征提取网络特征通用，冻结训练可以加快训练速度
-    #   也可以在训练初期防止权值被破坏。
-    #   Init_Epoch为起始世代
-    #   Freeze_Epoch为冻结训练的世代
-    #   Epoch为总训练世代
-    #   提示OOM或者显存不足请调小batch_size
+    #   主幹特征提取網絡特征通用，凍結訓練可以加快訓練速度
+    #   也可以在訓練初期防止權值被破壞。
+    #   Init_Epoch為起始世代
+    #   Freeze_Epoch為凍結訓練的世代
+    #   Epoch為總訓練世代
+    #   提示OOM或者顯存不足請調小batch_size
     #------------------------------------------------------#
     if True:
         #----------------------------------------------------#
-        #   冻结阶段训练参数
-        #   此时模型的主干被冻结了，特征提取网络不发生改变
-        #   占用的显存较小，仅对网络进行微调
+        #   凍結階段訓練參數
+        #   此時模型的主幹被凍結了，特征提取網絡不發生改變
+        #   占用的顯存較小，僅對網絡進行微調
         #----------------------------------------------------#
         lr               = 1e-3
         # Batch_size     = 32
@@ -148,7 +148,7 @@ if __name__ == "__main__":
         epoch_step_val  = num_val // Batch_size
 
         if epoch_step == 0 or epoch_step_val == 0:
-            raise ValueError("数据集过小，无法进行训练，请扩充数据集。")
+            raise ValueError("數據集過小，無法進行訓練，請擴充數據集。")
         
         optimizer       = optim.Adam(model_train.parameters(), lr, weight_decay = 5e-4)
         lr_scheduler    = optim.lr_scheduler.StepLR(optimizer, step_size = 1, gamma = 0.94)
@@ -160,7 +160,7 @@ if __name__ == "__main__":
         gen_val         = DataLoader(val_dataset, batch_size=Batch_size, num_workers=num_workers, pin_memory=True,
                                 drop_last=True, collate_fn=detection_collate)
         #------------------------------------#
-        #   冻结一定部分训练
+        #   凍結一定部分訓練
         #------------------------------------#
         if Freeze_Train:
             model.freeze_backbone()
@@ -170,14 +170,14 @@ if __name__ == "__main__":
             if loss_history.earlyStop(): break
             fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, max_Freeze_Epoch, Cuda)
             lr_scheduler.step()
-            
+        print("End of Freeze Training")            
             
 
     if True:
         #----------------------------------------------------#
-        #   解冻阶段训练参数
-        #   此时模型的主干不被冻结了，特征提取网络会发生改变
-        #   占用的显存较大，网络所有的参数都会发生改变
+        #   解凍階段訓練參數
+        #   此時模型的主幹不被凍結了，特征提取網絡會發生改變
+        #   占用的顯存較大，網絡所有的參數都會發生改變
         #----------------------------------------------------#
         lr              = 1e-4
         Batch_size      = 16
@@ -187,7 +187,7 @@ if __name__ == "__main__":
         epoch_step_val  = num_val // Batch_size
 
         if epoch_step == 0 or epoch_step_val == 0:
-            raise ValueError("数据集过小，无法进行训练，请扩充数据集。")
+            raise ValueError("數據集過小，無法進行訓練，請擴充數據集。")
 
         optimizer       = optim.Adam(model_train.parameters(), lr, weight_decay = 5e-4)
         lr_scheduler    = optim.lr_scheduler.StepLR(optimizer, step_size = 1, gamma = 0.94)
@@ -199,7 +199,7 @@ if __name__ == "__main__":
         gen_val         = DataLoader(val_dataset, batch_size=Batch_size, num_workers=num_workers, pin_memory=True,
                                 drop_last=True, collate_fn=detection_collate)
         #------------------------------------#
-        #   解冻后训练
+        #   解凍後訓練
         #------------------------------------#
         if Freeze_Train:
             model.Unfreeze_backbone()
@@ -208,3 +208,4 @@ if __name__ == "__main__":
             if loss_history.earlyStop(): break
             fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, max_UnFreeze_Epoch, Cuda)
             lr_scheduler.step()
+        print("End of UnFreeze Training")
