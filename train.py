@@ -64,6 +64,10 @@ if __name__ == "__main__":
     #------------------------------------------------------#
     Freeze_Train    = True
     #------------------------------------------------------#
+    #   是否提早結束。
+    #------------------------------------------------------#
+    Early_Stopping  = False
+    #------------------------------------------------------#
     #   獲得圖片路徑和標簽
     #------------------------------------------------------#    
     annotation_path = os.path.join(data_dir, "Classification/cls_train.txt")
@@ -76,8 +80,7 @@ if __name__ == "__main__":
     #   開啟後會加快數據讀取速度，但是會占用更多內存
     #   在IO為瓶頸的時候再開啟多線程，即GPU運算速度遠大於讀取圖片的速度。
     #------------------------------------------------------#
-    num_workers     = 1
-
+    num_workers     = 4
     #------------------------------------------------------#
     #   獲取classes
     #------------------------------------------------------#
@@ -167,7 +170,7 @@ if __name__ == "__main__":
 
         for epoch in range(Init_Epoch, max_Freeze_Epoch):
             next_UnFreeze_Epoch = epoch + 1
-            if loss_history.earlyStop(): break
+            if (Early_Stopping and loss_history.stopping): break
             fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, max_Freeze_Epoch, Cuda)
             lr_scheduler.step()
         print("End of Freeze Training")            
@@ -205,7 +208,7 @@ if __name__ == "__main__":
             model.Unfreeze_backbone()
 
         for epoch in range(next_UnFreeze_Epoch, max_UnFreeze_Epoch):
-            if loss_history.earlyStop(): break
+            if (Early_Stopping and loss_history.stopping): break
             fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, max_UnFreeze_Epoch, Cuda)
             lr_scheduler.step()
         print("End of UnFreeze Training")
