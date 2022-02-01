@@ -66,7 +66,7 @@ if __name__ == "__main__":
     #------------------------------------------------------#
     #   是否提早結束。
     #------------------------------------------------------#
-    Early_Stopping  = False
+    Early_Stopping  = True
     #------------------------------------------------------#
     #   獲得圖片路徑和標簽
     #------------------------------------------------------#    
@@ -170,7 +170,7 @@ if __name__ == "__main__":
 
         for epoch in range(Init_Epoch, max_Freeze_Epoch):
             next_UnFreeze_Epoch = epoch + 1
-            if (Early_Stopping and loss_history.stopping): break
+            # if (Early_Stopping and loss_history.stopping): break
             fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, max_Freeze_Epoch, Cuda)
             lr_scheduler.step()
         print("End of Freeze Training")            
