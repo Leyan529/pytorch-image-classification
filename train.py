@@ -166,7 +166,9 @@ if __name__ == "__main__":
         #   凍結一定部分訓練
         #------------------------------------#
         if Freeze_Train:
+            loss_history.set_status(freeze=True) 
             model.freeze_backbone()
+            loss_history.reset_stop()
 
         for epoch in range(Init_Epoch, max_Freeze_Epoch):
             next_UnFreeze_Epoch = epoch + 1
@@ -205,7 +207,9 @@ if __name__ == "__main__":
         #   解凍後訓練
         #------------------------------------#
         if Freeze_Train:
+            loss_history.set_status(freeze=False) 
             model.Unfreeze_backbone()
+            loss_history.reset_stop()
 
         for epoch in range(next_UnFreeze_Epoch, max_UnFreeze_Epoch):
             if (Early_Stopping and loss_history.stopping): break
