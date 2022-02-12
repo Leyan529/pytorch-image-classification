@@ -75,6 +75,12 @@ I use the **`round of mean beauty score`** to train the classification model.
 * **torchsummary**
 * **dlib==19.21**
 
+## Requirenents
+
+```python
+pip install -r requirements.txt -f https://download.pytorch.org/whl/torch_stable.html
+```
+
 ## Usage
 ### 1. Prepare the dataset
 * **Create your own `dataset_annotation.py` then create `cls_train.txt` and `cls_test.txt` .** 
