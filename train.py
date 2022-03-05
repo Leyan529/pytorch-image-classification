@@ -142,8 +142,7 @@ if __name__ == "__main__":
         #   占用的顯存較小，僅對網絡進行微調
         #----------------------------------------------------#
         lr               = 1e-3
-        # Batch_size     = 32
-        Batch_size       = 2
+        Batch_size     = 32
         Init_Epoch       = 0
         max_Freeze_Epoch = 50
 
