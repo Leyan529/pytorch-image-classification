@@ -148,7 +148,7 @@ class Inception3(nn.Module):
             for param in module.parameters():
                 param.requires_grad = False
 
-    def Unfreeze_backbone(self):
+    def unfreeze_backbone(self):
         freeze_list = [self.Conv2d_1a_3x3, self.Conv2d_2a_3x3,self.Conv2d_2b_3x3,self.maxpool1,self.Conv2d_3b_1x1,self.Conv2d_4a_3x3,self.maxpool2,
                     self.Mixed_5b,self.Mixed_5c,self.Mixed_5d,self.Mixed_6a,self.Mixed_6b,self.Mixed_6c,self.Mixed_6d,self.Mixed_6e,self.AuxLogits,
                     self.Mixed_7a,self.Mixed_7b,self.Mixed_7c,self.avgpool,self.dropout]

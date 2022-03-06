@@ -154,7 +154,7 @@ class GoogLeNet(nn.Module):
             for param in module.parameters():
                 param.requires_grad = False
 
-    def Unfreeze_backbone(self):
+    def unfreeze_backbone(self):
         freeze_list = [self.conv1, self.maxpool1, self.conv2 , self.conv3, self.maxpool2, self.inception3a, self.inception3b,
             self.maxpool3, self.inception4a, self.inception4b, self.inception4c, self.inception4d, self.inception4e, self.maxpool4, 
             self.inception5a, self.inception5b]

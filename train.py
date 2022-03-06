@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 from nets import get_model_from_name, ModelType
 
 from utils.callbacks import LossHistory
-from utils.dataloader import DataGenerator, detection_collate
+from utils.dataloader import DataGenerator, dataset_collate
 from utils.utils import get_classes, weights_init
 from utils.utils_fit import fit_one_epoch
 from helps.choose_data import DataType, get_data
@@ -63,6 +63,19 @@ if __name__ == "__main__":
     #   是否進行凍結訓練，默認先凍結主幹訓練後解凍訓練。
     #------------------------------------------------------#
     Freeze_Train    = True
+    #------------------------------------------------------#
+    Init_Epoch              = 0
+    Freeze_Epoch            = 50
+    Freeze_batch_size       = 32
+    Freeze_lr               = 1e-3    
+    #------------------------------------------------------#
+    #   解凍階段訓練參數
+    #   此時模型的主幹不被凍結了，特征提取網絡會發生改變
+    #   占用的顯存較大，網絡所有的參數都會發生改變
+    #------------------------------------------------------#
+    UnFreeze_Epoch          = 100
+    Unfreeze_batch_size     = 16
+    Unfreeze_lr             = 1e-4
     #------------------------------------------------------#
     #   是否提早結束。
     #------------------------------------------------------#
@@ -136,82 +149,81 @@ if __name__ == "__main__":
     #   提示OOM或者顯存不足請調小batch_size
     #------------------------------------------------------#
     if True:
-        #----------------------------------------------------#
-        #   凍結階段訓練參數
-        #   此時模型的主幹被凍結了，特征提取網絡不發生改變
-        #   占用的顯存較小，僅對網絡進行微調
-        #----------------------------------------------------#
-        lr               = 1e-3
-        Batch_size     = 32
-        Init_Epoch       = 0
-        max_Freeze_Epoch = 50
+        UnFreeze_flag = False        
+        #-------------------------------------------------------------------#
+        #   如果不冻结训练的话，直接设置batch_size为Unfreeze_batch_size
+        #-------------------------------------------------------------------#
+        batch_size = Freeze_batch_size if Freeze_Train else Unfreeze_batch_size
+        end_epoch = Freeze_Epoch if Freeze_Train else UnFreeze_Epoch
 
-        epoch_step      = num_train // Batch_size
-        epoch_step_val  = num_val // Batch_size
-
-        if epoch_step == 0 or epoch_step_val == 0:
-            raise ValueError("數據集過小，無法進行訓練，請擴充數據集。")
-        
-        optimizer       = optim.Adam(model_train.parameters(), lr, weight_decay = 5e-4)
-        lr_scheduler    = optim.lr_scheduler.StepLR(optimizer, step_size = 1, gamma = 0.94)
-
-        train_dataset   = DataGenerator(lines[:num_train], input_shape, random=True, train=True)
-        val_dataset     = DataGenerator(lines[num_train:], input_shape, random=False, train=False)
-        gen             = DataLoader(train_dataset, batch_size=Batch_size, num_workers=num_workers, pin_memory=True,
-                                drop_last=True, collate_fn=detection_collate)
-        gen_val         = DataLoader(val_dataset, batch_size=Batch_size, num_workers=num_workers, pin_memory=True,
-                                drop_last=True, collate_fn=detection_collate)
-        #------------------------------------#
-        #   凍結一定部分訓練
-        #------------------------------------#
         if Freeze_Train:
-            loss_history.set_status(freeze=True) 
-            model.freeze_backbone()
+            #------------------------------------#
+            #   凍結一定部分訓練
+            #------------------------------------#
+            loss_history.set_status(freeze=True)
+            model.freeze_backbone() 
             loss_history.reset_stop()
-
-        for epoch in range(Init_Epoch, max_Freeze_Epoch):
-            next_UnFreeze_Epoch = epoch + 1
-            # if (Early_Stopping and loss_history.stopping): break
-            fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, max_Freeze_Epoch, Cuda)
-            lr_scheduler.step()
-        print("End of Freeze Training")            
-            
-
-    if True:
-        #----------------------------------------------------#
-        #   解凍階段訓練參數
-        #   此時模型的主幹不被凍結了，特征提取網絡會發生改變
-        #   占用的顯存較大，網絡所有的參數都會發生改變
-        #----------------------------------------------------#
-        lr              = 1e-4
-        Batch_size      = 16
-        max_UnFreeze_Epoch  = 100
-
-        epoch_step      = num_train // Batch_size
-        epoch_step_val  = num_val // Batch_size
-
-        if epoch_step == 0 or epoch_step_val == 0:
-            raise ValueError("數據集過小，無法進行訓練，請擴充數據集。")
-
+            lr          = Freeze_lr
+        else:
+            #------------------------------------#
+            #   解凍後訓練
+            #------------------------------------#
+            loss_history.set_status(freeze=False)
+            model.unfreeze_backbone()   
+            loss_history.reset_stop() 
+            lr          = Unfreeze_lr
+        #-------------------------------------------------------------------#
         optimizer       = optim.Adam(model_train.parameters(), lr, weight_decay = 5e-4)
         lr_scheduler    = optim.lr_scheduler.StepLR(optimizer, step_size = 1, gamma = 0.94)
+        #-------------------------------------------------------------------#
 
         train_dataset   = DataGenerator(lines[:num_train], input_shape, True)
         val_dataset     = DataGenerator(lines[num_train:], input_shape, False)
-        gen             = DataLoader(train_dataset, batch_size=Batch_size, num_workers=num_workers, pin_memory=True,
-                                drop_last=True, collate_fn=detection_collate)
-        gen_val         = DataLoader(val_dataset, batch_size=Batch_size, num_workers=num_workers, pin_memory=True,
-                                drop_last=True, collate_fn=detection_collate)
-        #------------------------------------#
-        #   解凍後訓練
-        #------------------------------------#
-        if Freeze_Train:
-            loss_history.set_status(freeze=False) 
-            model.Unfreeze_backbone()
-            loss_history.reset_stop()
 
-        for epoch in range(next_UnFreeze_Epoch, max_UnFreeze_Epoch):
-            if (Early_Stopping and loss_history.stopping): break
-            fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, max_UnFreeze_Epoch, Cuda)
+        gen             = DataLoader(train_dataset, shuffle = True, batch_size = batch_size, num_workers = num_workers, pin_memory=True,
+                                        drop_last=True, collate_fn=dataset_collate)
+        gen_val         = DataLoader(val_dataset  , shuffle = True, batch_size = batch_size, num_workers = num_workers, pin_memory=True, 
+                                    drop_last=True, collate_fn=dataset_collate)   
+        epoch_step      = num_train // batch_size
+        epoch_step_val  = num_val // batch_size
+
+        if epoch_step == 0 or epoch_step_val == 0:
+            raise ValueError("数据集过小，无法继续进行训练，请扩充数据集。")
+        #---------------------------------------#
+        #   开始模型训练
+        #---------------------------------------#
+        for epoch in range(Init_Epoch, UnFreeze_Epoch):
+            #---------------------------------------#
+            #   如果模型有冻结学习部分
+            #   则解冻，并设置参数
+            #---------------------------------------#
+            if epoch >= Freeze_Epoch and not UnFreeze_flag and Freeze_Train:                            
+
+                epoch_step      = num_train // batch_size
+                epoch_step_val  = num_val // batch_size
+
+                if epoch_step == 0 or epoch_step_val == 0:
+                    raise ValueError("数据集过小，无法继续进行训练，请扩充数据集。")                   
+                #-----------------------------------------------------------------------------------------#
+                print("End of Freeze Training")
+                UnFreeze_flag = True
+                #-----------------------------------------------------------------------------------------#
+                batch_size = Unfreeze_batch_size   
+                end_epoch = UnFreeze_Epoch
+                lr          = Unfreeze_lr
+
+                optimizer       = optim.Adam(model_train.parameters(), lr, weight_decay = 5e-4)
+                lr_scheduler    = optim.lr_scheduler.StepLR(optimizer, step_size = 1, gamma = 0.94)
+                
+                loss_history.set_status(freeze=False)
+                model.unfreeze_backbone()   
+                loss_history.reset_stop() 
+                #-----------------------------------------------------------------------------------------#
+                
+            # only early stop when UnFreeze Training
+            if (UnFreeze_flag and Early_Stopping and loss_history.stopping): break
+            
+            fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, end_epoch, Cuda)           
             lr_scheduler.step()
+
         print("End of UnFreeze Training")

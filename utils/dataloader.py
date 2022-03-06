@@ -108,7 +108,7 @@ class DataGenerator(data.Dataset):
         image_data = cv2.cvtColor(x, cv2.COLOR_HSV2RGB)*255
         return image_data
 
-def detection_collate(batch):
+def dataset_collate(batch):
     images = []
     targets = []
     for image, y in batch:

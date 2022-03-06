@@ -209,7 +209,7 @@ class VisionTransformer(nn.Module):
             except:
                 module.requires_grad = False
 
-    def Unfreeze_backbone(self):
+    def unfreeze_backbone(self):
         backbone = [self.patch_embed, self.cls_token, self.pos_embed, self.pos_drop, self.blocks[:8]]
         for module in backbone:
             try:

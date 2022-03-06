@@ -175,7 +175,7 @@ class ResNet(nn.Module):
             for param in module.parameters():
                 param.requires_grad = False
 
-    def Unfreeze_backbone(self):
+    def unfreeze_backbone(self):
         backbone = [self.conv1, self.bn1, self.layer1, self.layer2, self.layer3, self.layer4]
         for module in backbone:
             for param in module.parameters():

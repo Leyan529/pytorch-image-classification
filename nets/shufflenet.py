@@ -159,7 +159,7 @@ class ShuffleNetV2(nn.Module):
             for param in module.parameters():
                 param.requires_grad = False
 
-    def Unfreeze_backbone(self):
+    def unfreeze_backbone(self):
         freeze_list = [self.conv1, self.maxpool, self.stage2 , self.stage3, self.stage4, self.conv5]
 
         for module in freeze_list:

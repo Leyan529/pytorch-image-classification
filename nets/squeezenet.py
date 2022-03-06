@@ -99,7 +99,7 @@ class SqueezeNet(nn.Module):
         for param in self.features.parameters():
             param.requires_grad = False
 
-    def Unfreeze_backbone(self):
+    def unfreeze_backbone(self):
         for param in self.features.parameters():
             param.requires_grad = True
 
