@@ -6,8 +6,7 @@ from typing import Any, Callable, Optional, List, Sequence
 import torch.fx
 from torch import nn, Tensor
 import torch
-from torchvision.models.utils import load_state_dict_from_url
-
+from torch.hub import load_state_dict_from_url
 from .ops.misc import ConvNormActivation, SqueezeExcitation, StochasticDepth, _make_divisible
 
 model_urls = {

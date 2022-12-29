@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from torchvision.models.utils import load_state_dict_from_url
+from torch.hub import load_state_dict_from_url
 
 model_urls = {
     'vgg16': 'https://download.pytorch.org/models/vgg16-397923af.pth',

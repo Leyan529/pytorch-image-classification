@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from torchvision.models.utils import load_state_dict_from_url
+from torch.hub import load_state_dict_from_url
 model_urls = {
     "alexnet": "https://download.pytorch.org/models/alexnet-owt-7be5be79.pth",
 }

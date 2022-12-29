@@ -5,8 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 
-from torchvision.models.utils import load_state_dict_from_url
-
+from torch.hub import load_state_dict_from_url
 model_urls = {
     # Inception v3 ported from TensorFlow
     "inception_v3_google": "https://download.pytorch.org/models/inception_v3_google-0cc3c7bd.pth",

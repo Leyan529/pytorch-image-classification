@@ -5,8 +5,7 @@ import torch.nn.functional as F
 import torch.fx
 from torch import nn, Tensor
 import torch
-from torchvision.models.utils import load_state_dict_from_url
-
+from torch.hub import load_state_dict_from_url
 
 __all__ = ["DenseNet", "densenet121", "densenet169", "densenet201", "densenet161"]
 

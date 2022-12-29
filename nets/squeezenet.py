@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 
-from torchvision.models.utils import load_state_dict_from_url
+from torch.hub import load_state_dict_from_url
 import torch.nn.init as init
 
 model_urls = {

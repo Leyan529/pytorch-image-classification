@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
-from torchvision.models.utils import load_state_dict_from_url
-
+from torch.hub import load_state_dict_from_url
 model_urls = {
     'resnet50': 'https://download.pytorch.org/models/resnet50-19c8e357.pth',
 }
