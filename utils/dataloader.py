@@ -7,6 +7,7 @@ from PIL import Image
 
 from .utils import cvtColor, preprocess_input
 from utils.augmentations import Albumentations
+import torch
 
 class DataGenerator(data.Dataset):
     def __init__(self, annotation_lines, input_shape, random=True, train = True):
@@ -114,6 +115,6 @@ def dataset_collate(batch):
     for image, y in batch:
         images.append(image)
         targets.append(y)
-    images = np.array(images)
-    targets = np.array(targets)
+    images  = torch.from_numpy(np.array(images)).type(torch.FloatTensor)
+    targets = torch.from_numpy(np.array(targets)).type(torch.FloatTensor).long()
     return images, targets

@@ -7,9 +7,9 @@ from classification import (Classification, cvtColor, letterbox_image,
 from utils.utils import letterbox_image
 import os
 
-from helps.choose_data import DataType, get_data
+from utils.choose_data import DataType, get_data
 
-root_path = "D:/WorkSpace/JupyterWorkSpace/DataSet/Image-Classification"
+root_path = "/home/leyan/DataSet"
 data_dir, _ = get_data(root_path, DataType.EdgeAOI)
 
 class top5_Classification(Classification):

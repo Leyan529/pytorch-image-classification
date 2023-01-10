@@ -28,12 +28,12 @@ class LossHistory():
         self.freeze = False
 
         # write model summary
-        x = threading.Thread(target=self.write_summary, args=([deepcopy(model.module).cpu(), input_shape]))
-        x.start() 
+        # x = threading.Thread(target=self.write_summary, args=([deepcopy(model.module).cpu(), input_shape]))
+        # x.start() 
 
         # launch tensorboard
-        t = threading.Thread(target=self.launchTensorBoard, args=([self.log_dir]))
-        t.start()     
+        # t = threading.Thread(target=self.launchTensorBoard, args=([self.log_dir]))
+        # t.start()     
 
         # initial EarlyStopping
         self.patience = patience
