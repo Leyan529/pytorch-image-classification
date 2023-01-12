@@ -110,6 +110,12 @@ python eval_top5.py
 python predict.py
 ```
 
+### 5. export
+* Can switch your saved model export to ONNX format
+```python
+python export.py --config "configs.yolact_base"
+```
+
 ## Reference
 - dlib-models : https://github.com/davisking/dlib-models
 - Transfer Learning - Fine tune : https://hackmd.io/@lido2370/HyLTOlSn4?type=view
