@@ -2,11 +2,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from torch import nn
-
-from nets import get_model_from_name, ModelType
+import os
+# from nets import get_model_from_name, ModelType
 from utils.utils import (cvtColor, get_classes, letterbox_image,
                          preprocess_input)
-
+import models
 
 #--------------------------------------------#
 #   使用自己训练好的模型预测需要修改3个参数
@@ -19,12 +19,9 @@ class Classification(object):
         #   model_path指向logs文件夹下的权值文件，classes_path指向model_data下的txt
         #   如果出现shape不匹配，同时要注意训练时的model_path和classes_path参数的修改
         #--------------------------------------------------------------------------#
-        "model_path"    : 'logs/ep001-loss1.098-val_loss0.648.pth',
-        "classes_path"  : 'model_data/EdgeAOI_classes.txt',
-
-        # "classes_path"  : 'model_data/HandWrite_classes.txt',
-
-        # "classes_path"  : 'model_data/SCUT_classes.txt',
+        "root_dir"      : "",
+        "model_path"    : 'best_epoch_weights.pth',
+        "classes_path"  : 'model_data/EdgeAOI_classes.txt', 
         #--------------------------------------------------------------------#
         #   输入的图片大小
         #--------------------------------------------------------------------#
@@ -33,7 +30,12 @@ class Classification(object):
         #   所用模型种类：
         #   mobilenet、resnet50、vgg16、vit
         #--------------------------------------------------------------------#
-        "backbone"      : ModelType.mobilenet, # choose classification model
+        "backbone"      : "resnet152", # choose classification model
+        #--------------------------------------------------------------------#
+        #   该变量用于控制是否使用letterbox_image对输入图像进行不失真的resize
+        #   否则对图像进行CenterCrop
+        #--------------------------------------------------------------------#
+        "letterbox_image"   : False,
         #-------------------------------#
         #   是否使用Cuda
         #   没有GPU可以设置成False
@@ -60,6 +62,7 @@ class Classification(object):
         #   获得种类
         #---------------------------------------------------#
         self.class_names, self.num_classes = get_classes(self.classes_path)
+        self.model_path = os.path.join(self.root_dir, self.model_path)
         self.generate()
 
     #---------------------------------------------------#
@@ -69,10 +72,12 @@ class Classification(object):
         #---------------------------------------------------#
         #   载入模型与权值
         #---------------------------------------------------#
-        if self.backbone != "vit":
-            self.model  = get_model_from_name[self.backbone](num_classes = self.num_classes, pretrained = False)
-        else:
-            self.model  = get_model_from_name[self.backbone](input_shape = self.input_shape, num_classes = self.num_classes, pretrained = False)
+        self.model = models.get_model(self.backbone, self.input_shape, pretrained=False, output_size=self.num_classes)  
+
+        # if self.backbone != "vit":
+        #     self.model  = get_model_from_name[self.backbone](num_classes = self.num_classes, pretrained = False)
+        # else:
+        #     self.model  = get_model_from_name[self.backbone](input_shape = self.input_shape, num_classes = self.num_classes, pretrained = False)
         device      = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model.load_state_dict(torch.load(self.model_path, map_location=device))
         self.model  = self.model.eval()

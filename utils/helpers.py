@@ -211,4 +211,4 @@ def get_data(root_path, dataType):
     class_names, num_classes = get_classes(classes_path)
     
 
-    return VOCdevkit_path, class_names, num_classes, annotation_path
+    return VOCdevkit_path, class_names, num_classes, annotation_path, classes_path

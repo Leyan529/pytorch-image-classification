@@ -1,22 +1,34 @@
 import numpy as np
 import torch
 from PIL import Image
-
+from .utils_aug import resize, center_crop
 
 #---------------------------------------------------#
 #   对输入图像进行resize
 #---------------------------------------------------#
-def letterbox_image(image, size):
-    '''resize image with unchanged aspect ratio using padding'''
-    iw, ih = image.size
-    h, w = size
-    scale = min(w/iw, h/ih)
-    nw = int(iw*scale)
-    nh = int(ih*scale)
+def letterbox_image(image, size, letterbox_image):
+    w, h = size
+    try:
+        iw, ih = image.size
+    except Exception as e:
+        image = image[0]
+        iw, ih = image.size
 
-    image = image.resize((nw,nh), Image.BICUBIC)
-    new_image = Image.new('RGB', size, (128,128,128))
-    new_image.paste(image, ((w-nw)//2, (h-nh)//2))
+    if letterbox_image:
+        '''resize image with unchanged aspect ratio using padding'''
+        scale = min(w/iw, h/ih)
+        nw = int(iw*scale)
+        nh = int(ih*scale)
+
+        image = image.resize((nw,nh), Image.BICUBIC)
+        new_image = Image.new('RGB', size, (128,128,128))
+        new_image.paste(image, ((w-nw)//2, (h-nh)//2))
+    else:
+        if h == w:
+            new_image = resize(image, h)
+        else:
+            new_image = resize(image, [h ,w])
+        new_image = center_crop(new_image, [h ,w])
     return new_image
 
 #---------------------------------------------------#

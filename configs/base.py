@@ -28,7 +28,7 @@ def get_opts(Train=True):
     # get annotation file in current seting
     # importlib.import_module("annotation.{}".format(opt.exp_name)).get_annotation(opt.data_root) 
 
-    opt.data_path, opt.class_names, opt.num_classes, annotation_path = \
+    opt.data_path, opt.class_names, opt.num_classes, annotation_path, opt.classes_path = \
             get_data(opt.data_root, opt.exp_name)
 
     #----------------------------------------------------#
