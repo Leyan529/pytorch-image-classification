@@ -7,7 +7,7 @@ import os
 from utils.utils import (cvtColor, get_classes, letterbox_image,
                          preprocess_input)
 import models
-
+import cv2
 #--------------------------------------------#
 #   使用自己训练好的模型预测需要修改3个参数
 #   model_path和classes_path和backbone都需要修改！
@@ -99,7 +99,7 @@ class Classification(object):
         #---------------------------------------------------#
         #   对图片进行不失真的resize
         #---------------------------------------------------#
-        image_data  = letterbox_image(image, [self.input_shape[1], self.input_shape[0]])
+        image_data  = letterbox_image(image, [self.input_shape[1], self.input_shape[0]], self.letterbox_image)
         #---------------------------------------------------------#
         #   归一化+添加上batch_size维度+转置
         #---------------------------------------------------------#
@@ -122,8 +122,12 @@ class Classification(object):
         #---------------------------------------------------#
         #   绘图并写字
         #---------------------------------------------------#
-        plt.subplot(1, 1, 1)
-        plt.imshow(np.array(image))
-        plt.title('Class:%s Probability:%.3f' %(class_name, probability))
-        plt.show()
-        return class_name
+        # plt.subplot(1, 1, 1)
+        # plt.imshow(np.array(image))
+        # plt.title('Class:%s Probability:%.3f' %(class_name, probability))
+        # plt.show()
+
+
+        frame = cv2.cvtColor(np.array(image),cv2.COLOR_RGB2BGR)
+        frame = cv2.putText(frame, f"Class {class_name} Probability=%.2f"%(probability), (0, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
+        return frame

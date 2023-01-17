@@ -6,7 +6,7 @@ predict.py有几个注意点
 from PIL import Image
 import importlib
 import argparse
-
+import cv2
 from classification import Classification
 
 
@@ -69,7 +69,9 @@ if __name__ == "__main__":
                 r_image     = classfication.detect_image(image)
                 if not os.path.exists(dir_save_path):
                     os.makedirs(dir_save_path)
-                r_image.save(os.path.join(dir_save_path, img_name))
+                # r_image.save(os.path.join(dir_save_path, img_name))
+                cv2.imwrite(os.path.join(dir_save_path, img_name), r_image)
+
                 
     else:
         raise AssertionError("Please specify the correct mode: 'predict', 'video', 'fps' or 'dir_predict'.")
