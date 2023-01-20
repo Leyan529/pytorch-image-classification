@@ -115,6 +115,8 @@ python predict.py
 ```python
 python export.py --config "configs.yolact_base"
 ```
+## Demo
+![hZTSthw](https://user-images.githubusercontent.com/24097516/213659867-31b8e574-0169-4fba-8b12-35e1c6295e51.jpeg)
 
 ## Reference
 - dlib-models : https://github.com/davisking/dlib-models
