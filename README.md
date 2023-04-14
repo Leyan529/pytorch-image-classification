@@ -55,6 +55,7 @@ I used 3 different datases: **`AOI`, `SCUT` and `HandWrite`** . Statistics of da
 
 - **HandWrite**:
   In the banking industry, there are various important handwritten documents that need to be manually inputted, which requires 21 person-hours per day. Therefore, we are currently looking for experts in image recognition who can use deep learning to automatically identify text in images and greatly reduce the cost of manual processing of repetitive tasks. The Yuanta AI Open Challenge 2021 Summer Games provides handwritten Chinese character image files for contestants to recognize text through CV algorithms and have the opportunity to win a high prize. The competition is divided into two stages: model training and online battles - model accuracy [competition](https://tbrain.trendmicro.com.tw/Competitions/Details/14) (test: 2021/05/24 - 2021/05/26, formal: 2021/06/15 - 2021/06/18).
+  
   ![image](https://user-images.githubusercontent.com/24097516/231931129-f91e9682-01b0-4a8f-9ad8-c2f267aef6f1.png)
 
   Processed File: [download link](https://1drv.ms/u/s!AvbkzP-JBXPAhkyKEl4FXz-FiKRi?e=WcSLNX)
