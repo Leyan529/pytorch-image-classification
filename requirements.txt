@@ -38,4 +38,7 @@ googledrivedownloader
 # CUDA 11.3 (Linux/Wins)
 # conda create -n torch_1_21 python=3.8
 # conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch
+# conda install ipykernel
+# python -m ipykernel install --user --name torch_1_21 --display-name torch_1_21
+
 # pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113
