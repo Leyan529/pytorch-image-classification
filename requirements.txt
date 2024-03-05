@@ -31,7 +31,8 @@ tensorboard==2.2.0
 
 tqdm==4.64.1
 xmltodict==0.13.0
-opencv-python==4.1.2.30
+# opencv-python==4.1.2.30 -----> can not support misg activation function
+opencv-python==4.5.3.56
 netron==6.3.6
 googledrivedownloader
 
